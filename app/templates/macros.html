@@ -1,0 +1,97 @@
+{# templates/macros.html #}
+{% macro book_form(form, is_edit=false) %}
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        
+        <div class="mb-3">
+            {{ form.title.label(class="form-label") }}
+            {{ form.title(class="form-control") }}
+            {% if form.title.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.title.errors[0] }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control", rows=8) }}
+            {% if form.description.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.description.errors[0] }}
+                </div>
+            {% endif %}
+            <div class="form-text">Поддерживается Markdown-разметка</div>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-3">
+                {{ form.year.label(class="form-label") }}
+                {{ form.year(class="form-control") }}
+                {% if form.year.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.year.errors[0] }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-3">
+                {{ form.publisher.label(class="form-label") }}
+                {{ form.publisher(class="form-control") }}
+                {% if form.publisher.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.publisher.errors[0] }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-3">
+                {{ form.author.label(class="form-label") }}
+                {{ form.author(class="form-control") }}
+                {% if form.author.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.author.errors[0] }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-3">
+                {{ form.pages.label(class="form-label") }}
+                {{ form.pages(class="form-control") }}
+                {% if form.pages.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.pages.errors[0] }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            {{ form.genres.label(class="form-label") }}
+            {{ form.genres(class="form-select") }}
+            {% if form.genres.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.genres.errors[0] }}
+                </div>
+            {% endif %}
+            <div class="form-text">Выберите хотя бы один жанр</div>
+        </div>
+        
+        {# Поле обложки только для создания #}
+        {% if not is_edit %}
+            <div class="mb-3">
+                {{ form.cover.label(class="form-label") }}
+                {{ form.cover(class="form-control") }}
+                {% if form.cover.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.cover.errors[0] }}
+                    </div>
+                {% endif %}
+                <div class="form-text">Допустимые форматы: PNG, JPG, JPEG</div>
+            </div>
+        {% endif %}
+        
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a href="{{ url_for('books.index') }}" class="btn btn-secondary">Отмена</a>
+    </form>
+{% endmacro %}

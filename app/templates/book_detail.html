@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <img src="{{ url_for('static', filename='covers/' + book.cover.filename) }}" 
+                 class="img-fluid" alt="{{ book.title }}">
+        </div>
+        <div class="col-md-8">
+            <h1>{{ book.title }}</h1>
+            <p class="lead">{{ book.author }} ({{ book.year }})</p>
+            <div class="mb-3">
+                <h4>Жанры:</h4>
+                {% for genre in book.genres %}
+                    <span class="badge bg-secondary">{{ genre.name }}</span>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                <h4>Описание:</h4>
+                <div class="markdown-content">{{ book.description|safe }}</div>
+            </div>
+            <div class="mb-3">
+                <h4>Издательство:</h4>
+                <p>{{ book.publisher }}</p>
+            </div>
+            <div class="mb-3">
+                <h4>Кол-во страниц:</h4>
+                <p>{{ book.pages }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <h3>Рецензии</h3>
+        {% if current_user.is_authenticated and not existing_review %}
+            <a href="{{ url_for('books.create_review', book_id=book.id) }}" 
+            class="btn btn-success mb-3">
+                Написать рецензию
+            </a>
+        {% endif %}
+
+        {% if book.reviews %}
+        
+            {% for review in book.reviews %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {{ review.user.last_name }} {{ review.user.first_name }}
+                            <span class="badge bg-primary">{{ review.rating }}/5</span>
+                        </h5>
+                        <div class="text-muted small mb-2">
+                            {{ review.created_at.strftime('%d.%m.%Y %H:%M') }}
+                        </div>
+                        <div class="markdown-content">{{ review.text | markdown | safe }}</div>
+                        {% if review.user_id == current_user.id or current_user.role_id in [2, 3] %}
+                            <form class="mt-2" method="POST" 
+                                action="{{ url_for('books.delete_review', review_id=review.id) }}">
+                                <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Отзывов нет</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
